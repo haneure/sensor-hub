@@ -84,6 +84,28 @@ spec:
     app: sensor-hub
 
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sensor-hub
+  labels:
+    app: sensor-hub
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  rules:
+  - host: sensor-hub.local  # Change to your desired hostname
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sensor-hub
+            port:
+              number: 5000
+
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:

@@ -5,6 +5,7 @@ adafruit-blinka>=8.0.0
 rpi-lgpio>=0.4  # Required by adafruit-blinka for GPIO access
 PyYAML>=6.0.1
 requests>=2.31.0  # For healthcheck
+psutil>=5.9.0  # For hardware stats
 
 # For binary building
 pyinstaller>=6.3.0

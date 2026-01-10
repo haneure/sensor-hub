@@ -6,9 +6,11 @@ import os
 from importlib import import_module
 from typing import Dict, Optional
 
-from fastapi import FastAPI, Header, HTTPException, status
+from fastapi import FastAPI, Header, HTTPException, status, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+
+from hardware.stats import HardwareStats
 
 # Configure logging
 logging.basicConfig(
@@ -47,6 +49,9 @@ app.add_middleware(
 
 # Initialize sensors from config
 sensors: Dict[str, object] = {}
+
+# Initialize hardware stats
+hardware_stats = HardwareStats()
 
 
 def load_sensors():
@@ -223,4 +228,34 @@ async def get_sensor_data_legacy(authorization: Optional[str] = Header(None)):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=result['error']
+        )
+
+
+@app.get("/api/stats", tags=["Hardware"])
+async def get_hardware_stats(authorization: Optional[str] = Header(None)):
+    """
+    Get Raspberry Pi hardware statistics
+    
+    Returns:
+        - os: {hostname, platform, arch}
+        - cpuTemp: CPU temperature in Celsius
+        - cpuUsage: Per-core CPU usage (numbers 0-100)
+        - memoryUsage: {used, total} in bytes
+    """
+    verify_api_key(authorization)
+    
+    result = hardware_stats.get_stats()
+    
+    if result['success']:
+        # Remove 'success' field from response
+        return {
+            "os": result["os"],
+            "cpuTemp": result["cpuTemp"],
+            "cpuUsage": result["cpuUsage"],
+            "memoryUsage": result["memoryUsage"]
+        }
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=result.get('error', 'Failed to collect hardware stats')
         )

@@ -42,11 +42,9 @@ spec:
         - name: config
           mountPath: /app/config.yaml
           subPath: config.yaml
-        # GPIO access (requires privileged or device mapping)
-        - name: dev-gpiomem
-          mountPath: /dev/gpiomem
-        - name: dev-gpio
-          mountPath: /dev/gpio
+        # GPIO access for Raspberry Pi 5 (requires gpiochip devices)
+        - name: dev
+          mountPath: /dev
         
         resources:
           requests:
@@ -64,12 +62,9 @@ spec:
       - name: config
         configMap:
           name: sensor-hub-config
-      - name: dev-gpiomem
+      - name: dev
         hostPath:
-          path: /dev/gpiomem
-      - name: dev-gpio
-        hostPath:
-          path: /dev/gpio
+          path: /dev
 
 ---
 apiVersion: v1
@@ -89,13 +84,35 @@ spec:
     app: sensor-hub
 
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sensor-hub
+  labels:
+    app: sensor-hub
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  rules:
+  - host: sensor-hub.mumei.local  # Adjust to your hostname
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sensor-hub
+            port:
+              number: 5000
+
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: sensor-hub-config
 data:
   config.yaml: |
-    api_key: "Bearer YOUR_SECRET_API_KEY_HERE"
+    api_key: "Bearer f85ea29b-98a2-4824-817a-fb29f08976a5"
     cors_origins:
       - "*"
     sensors:
@@ -112,4 +129,4 @@ metadata:
   name: sensor-hub-secrets
 type: Opaque
 stringData:
-  api-key: "Bearer YOUR_SECRET_API_KEY_HERE"
+  api-key: "Bearer f85ea29b-98a2-4824-817a-fb29f08976a5"
