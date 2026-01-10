@@ -32,6 +32,8 @@ spec:
           value: "1"
         - name: CONFIG_FILE
           value: "/app/config.yaml"
+        - name: PUBLIC_HOSTNAME
+          value: "mumei"
         - name: API_KEY
           valueFrom:
             secretKeyRef:

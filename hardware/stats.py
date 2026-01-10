@@ -57,7 +57,7 @@ class HardwareStats:
         """Get OS information"""
         try:
             return {
-                "hostname": socket.gethostname(),
+                "hostname": os.getenv("PUBLIC_HOSTNAME", socket.gethostname()),
                 "platform": platform.system(),
                 "arch": platform.machine()
             }
