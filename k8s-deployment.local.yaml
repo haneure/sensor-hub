@@ -114,7 +114,7 @@ metadata:
   name: sensor-hub-config
 data:
   config.yaml: |
-    api_key: "Bearer f85ea29b-98a2-4824-817a-fb29f08976a5"
+    api_key: "Bearer YOUR_SECRET_API_KEY_HERE"
     cors_origins:
       - "*"
     sensors:
@@ -131,4 +131,4 @@ metadata:
   name: sensor-hub-secrets
 type: Opaque
 stringData:
-  api-key: "Bearer f85ea29b-98a2-4824-817a-fb29f08976a5"
+  api-key: "Bearer YOUR_SECRET_API_KEY_HERE"
