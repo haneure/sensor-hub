@@ -20,6 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY main.py .
 COPY run.py .
 COPY sensors/ sensors/
+COPY hardware/ hardware/
 
 # Create non-root user
 RUN useradd -m -u 1000 sensoruser && \

@@ -25,6 +25,7 @@ COPY main.py .
 COPY run.py .
 COPY config.yaml .
 COPY sensors/ sensors/
+COPY hardware/ hardware/
 
 # Create a spec file for PyInstaller with hidden imports
 RUN echo "# -*- mode: python ; coding: utf-8 -*-\n\
@@ -32,7 +33,7 @@ a = Analysis(\n\
     ['run.py'],\n\
     pathex=[],\n\
     binaries=[],\n\
-    datas=[('config.yaml', '.'), ('sensors', 'sensors')],\n\
+    datas=[('config.yaml', '.'), ('sensors', 'sensors'), ('hardware', 'hardware')],\n\
     hiddenimports=[\n\
         'uvicorn.logging',\n\
         'uvicorn.loops',\n\
@@ -48,6 +49,8 @@ a = Analysis(\n\
         'adafruit_dht',\n\
         'sensors.dht22',\n\
         'sensors.base',\n\
+        'hardware.stats',\n\
+        'psutil',\n\
     ],\n\
     hookspath=[],\n\
     hooksconfig={},\n\
